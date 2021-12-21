@@ -171,6 +171,7 @@ class Simple_Calculator(MDApp):
         self.theme_cls.theme_style = 'Light'
         self.theme_cls.primary_palette = 'DeepPurple'
         self.theme_cls.primary_hue = '700'
+        self.icon = 'icon.png'
         return self.homeScreen
 
 def reset():

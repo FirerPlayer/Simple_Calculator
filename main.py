@@ -1,4 +1,4 @@
-from kivymd.tools.hotreload.app import MDApp
+from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.behaviors.magic_behavior import MagicBehavior
 from kivymd.uix.button.button import MDIconButton

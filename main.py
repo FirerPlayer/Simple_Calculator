@@ -1,23 +1,28 @@
-from kivymd.app import MDApp
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.behaviors.magic_behavior import MagicBehavior
-from kivymd.uix.button.button import MDIconButton
-from kivymd.uix.button import MDFillRoundFlatButton
-from kivymd.uix.label import MDLabel
-from kivymd.uix.anchorlayout import MDAnchorLayout
-from kivymd.uix.gridlayout import MDGridLayout
-from kivymd.uix.screen import MDScreen
-from kivymd.uix.fitimage import FitImage
+import os
+import sys
+
+from kivy.resources import resource_add_path
 from kivy.utils import get_color_from_hex as rgba
+from kivymd.app import MDApp
+from kivymd.uix.anchorlayout import MDAnchorLayout
+from kivymd.uix.behaviors.magic_behavior import MagicBehavior
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.button import MDFillRoundFlatButton
+from kivymd.uix.button.button import MDIconButton
+from kivymd.uix.fitimage import FitImage
+from kivymd.uix.gridlayout import MDGridLayout
+from kivymd.uix.label import MDLabel
+from kivymd.uix.screen import MDScreen
 
 strButtons = ['C', '^', 'del', ' / ',
-        '7', '8', '9', ' x ',
-        '4', '5', '6', ' - ',
-        '1', '2', '3', ' + ',
-        '+/-','0', '.', '=']
+              '7', '8', '9', ' x ',
+              '4', '5', '6', ' - ',
+              '1', '2', '3', ' + ',
+              '+/-', '0', '.', '=']
+
 
 class Visor(MDBoxLayout):
-    
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.label = MDLabel(
@@ -32,7 +37,7 @@ class Visor(MDBoxLayout):
         self.radius = 30, 30, 30, 30
         self.md_bg_color = rgba('#1038ea')
         self.opacity = 0.8
-    
+
     def addText(self, str):
         if self.label.text == '0':
             self.label.text = str
@@ -62,6 +67,7 @@ class Visor(MDBoxLayout):
     def getText(self) -> str:
         return self.label.text
 
+
 class CalcButton(MDFillRoundFlatButton):
     def __init__(self, visor, **kwargs):
         super().__init__(**kwargs)
@@ -71,7 +77,7 @@ class CalcButton(MDFillRoundFlatButton):
     def on_release(self):
         botao = self.text
         if botao == '^':
-            self.visor.setText('('+self.visor.getText()+')^')
+            self.visor.setText('(' + self.visor.getText() + ')^')
             return
         if botao == 'del':
             if len(self.visor.getText()) == 1:
@@ -87,6 +93,7 @@ class CalcButton(MDFillRoundFlatButton):
             return
         self.visor.addText(str(botao))
         return
+
 
 class TecladoCalculadora(MDGridLayout):
     def __init__(self, visor, **kwargs):
@@ -101,7 +108,7 @@ class TecladoCalculadora(MDGridLayout):
     def on_release(self):
         botao = self.text
         if botao == '^':
-            self.visor.setText('('+self.visor.getText()+')^')
+            self.visor.setText('(' + self.visor.getText() + ')^')
             return
         if botao == 'del':
             if len(self.visor.getText()) == 1:
@@ -118,6 +125,7 @@ class TecladoCalculadora(MDGridLayout):
         self.visor.addText(str(botao))
         return
 
+
 class MagicButton(MDIconButton, MagicBehavior):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -127,10 +135,10 @@ class MagicButton(MDIconButton, MagicBehavior):
     def on_release(self):
         self.twist()
         if self.aux == 'Light':
-            Simple_Calculator().theme_cls.theme_style = 'Dark'
+            SimpleCalculator().theme_cls.theme_style = 'Dark'
             self.aux = 'Dark'
         else:
-            Simple_Calculator().theme_cls.theme_style = 'Light'
+            SimpleCalculator().theme_cls.theme_style = 'Light'
             self.aux = 'Light'
         return
 
@@ -158,7 +166,8 @@ class Home(MDBoxLayout):
         self.add_widget(ancs[0])
         self.add_widget(ancs[1])
 
-class Simple_Calculator(MDApp):
+
+class SimpleCalculator(MDApp):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.homeScreen = MDScreen()
@@ -167,23 +176,21 @@ class Simple_Calculator(MDApp):
         self.homeScreen.add_widget(img)
         self.homeScreen.add_widget(Home())
 
-    def build_app(self):
+    def build(self, **kwargs):
+        super(SimpleCalculator, self).build()
         self.theme_cls.theme_style = 'Light'
         self.theme_cls.primary_palette = 'DeepPurple'
         self.theme_cls.primary_hue = '700'
         self.icon = 'icon.png'
         return self.homeScreen
 
-def reset():
-    import kivy.core.window as window
-    from kivy.base import EventLoop
-    if not EventLoop.event_listeners:
-        from kivy.cache import Cache
-        window.Window = window.core_select_lib('window', window.window_impl, True)
-        Cache.print_usage()
-        for cat in Cache._categories:
-            Cache._objects[cat] = {}
 
 if __name__ == '__main__':
-    reset()
-    Simple_Calculator().run()
+    try:
+        if hasattr(sys, '_MEIPASS'):
+            resource_add_path(os.path.join(sys._MEIPASS))
+        SimpleCalculator().run()
+
+    except Exception as e:
+        print(e)
+        input("Press enter.")
